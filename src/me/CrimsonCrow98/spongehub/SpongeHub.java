@@ -16,20 +16,16 @@ import com.google.inject.Inject;
 
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.network.ChannelBinding.RawDataChannel;
 
-@Plugin(id = "spongeutils", name = "Sponge Utils", version = "1.0")
-public class SpongeUtils {
+@Plugin(id = "spongehub", name = "Sponge Hub", version = "1.0")
+public class SpongeHub {
 	
-	public SpongeUtils spongehub = this;
+	public SpongeHub spongehub = this;
 	 @Inject
 		Game game;
 	 
 	 @Listener
-	    public void onGameInitializationEvent(GameInitializationEvent event) {
-		 
-		 RawDataChannel channel = game.getChannelRegistrar().createRawChannel(spongehub, "BungeeCord");
-		 
+	    public void onGameInitializationEvent(GameInitializationEvent event) {		 
 	        CommandSpec commandHub = CommandSpec.builder()
 	                .description(Text.of("Sends player back to the hub."))
 	                .executor(new CommandExecutor() {
@@ -43,7 +39,7 @@ public class SpongeUtils {
 	                    		
 
 	                    		// A one-liner to send a player to a server
-	                    		channel.sendTo(player, buf -> buf.writeString("Connect").writeString("lobby"));
+	                    		game.getChannelRegistrar().createRawChannel(spongehub, "BungeeCord").sendTo(player, buf -> buf.writeString("Connect").writeString("lobby"));
 	                    	}
 	                        return CommandResult.success();
 	                    }
@@ -51,25 +47,5 @@ public class SpongeUtils {
 	                .build();
 	        
 	        Sponge.getCommandManager().register(this, commandHub, "hub");
-	        
-	        CommandSpec commandRam = CommandSpec.builder()
-	                .description(Text.of("Debugs RAM usage."))
-	                .permission("spongeutils.command.ram")
-	                .executor(new CommandExecutor() {
-	                    @Override
-	                    public CommandResult execute(CommandSource commandSource, CommandContext commandContext) {
-	                    	Runtime runtime = Runtime.getRuntime();
-
-	                    	commandSource.sendMessage(Text.of("[Used / Total / Free]  " + (runtime.totalMemory() - runtime.freeMemory()) / 0x100000 + " MB / " + runtime.totalMemory() / 0x100000 + " MB / " + runtime.freeMemory() / 0x100000 + " MB"));
-	                   
-	                        return CommandResult.success();
-	                    }
-	                })
-	                .build();
-	        
-	        Sponge.getCommandManager().register(this, commandRam, "ram");
-	        
-	        
-	
 	 }
 }
