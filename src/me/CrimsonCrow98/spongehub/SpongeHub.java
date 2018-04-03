@@ -19,33 +19,26 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 
 @Plugin(id = "spongehub", name = "Sponge Hub", version = "1.0")
 public class SpongeHub {
-	
-	public SpongeHub spongehub = this;
-	 @Inject
-		Game game;
+	@Inject
+	Game game;
 	 
-	 @Listener
-	    public void onGameInitializationEvent(GameInitializationEvent event) {		 
-	        CommandSpec commandHub = CommandSpec.builder()
-	                .description(Text.of("Sends player back to the hub."))
-	                .executor(new CommandExecutor() {
-	                    @Override
-	                    public CommandResult execute(CommandSource commandSource, CommandContext commandContext) {
-	                    	if(commandSource instanceof Player){
-	                    		Player player = (Player) commandSource;
-	                    		
-	                    		game.getServer().getConsole().sendMessage(Text.of("[SpongeHub] Sending " + player.getName() + " back to the hub!"));
-	                    		// Create the channel
-	                    		
-
-	                    		// A one-liner to send a player to a server
-	                    		game.getChannelRegistrar().createRawChannel(spongehub, "BungeeCord").sendTo(player, buf -> buf.writeString("Connect").writeString("lobby"));
-	                    	}
-	                        return CommandResult.success();
-	                    }
-	                })
-	                .build();
-	        
-	        Sponge.getCommandManager().register(this, commandHub, "hub");
-	 }
+	@Listener
+	public void onGameInitializationEvent(GameInitializationEvent event) {		 
+		CommandSpec commandHub = CommandSpec.builder()
+			.description(Text.of("Sends player back to the hub."))
+			.executor(new CommandExecutor() {
+				@Override
+				public CommandResult execute(CommandSource commandSource, CommandContext commandContext) {
+					if(commandSource instanceof Player){
+						Player player = (Player) commandSource;
+						game.getServer().getConsole().sendMessage(Text.of("[SpongeHub] Sending " + player.getName() + " back to the hub!"));
+						// A one-liner to send a player to a server
+						game.getChannelRegistrar().createRawChannel(spongehub, "BungeeCord").sendTo(player, buf -> buf.writeString("Connect").writeString("lobby"));
+					}
+					return CommandResult.success();
+				}
+			}).build();
+		
+		Sponge.getCommandManager().register(this, commandHub, "hub");
+	}
 }
